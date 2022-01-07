@@ -259,7 +259,7 @@ async function getUserData() {
 
   var userDepositTime = userInfo.depositTime;
 
-
+  console.log(userDepositTime);
     
   var deposit_date = new Date(userDepositTime * 1000);
 
@@ -282,7 +282,14 @@ async function getUserData() {
     strWithdrawtime = getStrDate(deposit_date.addDays(365));
 
   $(".status").show();
-  $(".estTime").show();
+
+
+  if(userDepositTime == 0) {
+    $(".estTime").hide();
+  } else {
+    $(".estTime").show();
+  }
+  
 
   if(canWithdraw) {
     $(".withdraw_status").html("Available");

@@ -1,4 +1,4 @@
-const testMode = true;
+const testMode = false;
 
 let web3;
 let web3Modal;
@@ -16,4 +16,4 @@ let usdc = testMode ? "0x7d077FdCDbE6CDFf146E69162c3CE9D71317578b" : "0x55d39832
 let swapContractAddress = testMode ? "0xea51d958260fbC145A9b4dF678709047A050c698" : "0x4160B6539d1674aB09F07257E41b230932b76D9A";
 
 // Staking Contract
-let stakingContractAddress = testMode ? "0x712a6EF7B48072D1c605EDca727E39D0D1aeD697" : "";
+let stakingContractAddress = testMode ? "0x712a6EF7B48072D1c605EDca727E39D0D1aeD697" : "0xf5DC0809cF642Cc3Fd10F8FAb4cBa80B5B5fAb8a";
