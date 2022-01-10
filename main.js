@@ -58,10 +58,6 @@ window.addEventListener('load', async () => {
 async function onConnect() {
   try {
       provider = await web3Modal.connect();
-
-      $("#btn-connect-wallet").addClass("disabled");
-      $("#btn-connect-wallet").html("<i class='fas fa-sync-alt'></i>Swap");
-
 	    fetchAccountData();
 
   } catch(e) {
@@ -92,15 +88,7 @@ async function onDisconnect() {
    selectedAccount = null;
    pubChainId = 0;
 
-   $(".btn-connect-wallet").removeAttr("disabled");
-   $(".btn-connect-wallet").removeClass("disabled");
-
    jQuery(".connect-wallet").html(strConnectWallet);
-   jQuery("#btn-connect-wallet").html(strConnectWallet);
-
-   jQuery("#selectMax").attr("disabled", "true");
- 
-
    jQuery(".connect-wallet").removeAttr('data-toggle');
    jQuery(".connect-wallet").removeAttr('onclick');
    jQuery(".connect-wallet").removeAttr('data-target');
