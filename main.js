@@ -35,6 +35,8 @@ var userDepositAmount;
 var minimumAmount = 100;
 var depositType = 0;
 
+var dataInterval;
+
 
 window.addEventListener('load', async () => {
 
@@ -59,7 +61,6 @@ async function onConnect() {
   try {
       provider = await web3Modal.connect();
 	    fetchAccountData();
-
   } catch(e) {
     console.log("Could not get a wallet connection", e);
     return;
@@ -79,6 +80,10 @@ async function onConnect() {
   provider.on("networkChanged", (networkId) => {
     fetchAccountData();
   });
+
+  dataInterval = setInterval(function () {
+     fetchAccountData();
+  }, 5 * 1000);
 
 }
 
@@ -105,6 +110,8 @@ async function onDisconnect() {
       provider = null;
       await web3Modal.clearCachedProvider();
   }
+
+  clearInterval(dataInterval);
 }
 
 function connectWallet() {
