@@ -121,7 +121,7 @@ function connectWallet() {
 
 
 async function fetchAccountData() {
-
+  // alert(chainId);
   if(!isMobile) {
     web3 = new Web3(window.ethereum);
     if (window.ethereum) {
@@ -141,7 +141,7 @@ async function fetchAccountData() {
   } else {
     web3 = new Web3(provider);
     chainId = await web3.eth.getChainId();
-    chainData = evmChains.getChain(chainId);
+    // chainData = evmChains.getChain(chainId);
     accounts = await web3.eth.getAccounts();
   } 
 
@@ -342,6 +342,16 @@ function selectMax() {
 }
 
 function validInput() {
+
+    if(provider == null) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Transaction Fail',
+        text: 'Transaction has been rejected'
+      })
+      return false;
+    }
+
     $(".input-amount").removeClass("invalidInput");
     if(avlPRXBalance == 0) {
       $(".error-msg").html("Insufficient balance");
