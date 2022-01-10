@@ -60,12 +60,10 @@ window.addEventListener('load', async () => {
 
 async function onConnect() {
   try {
-    connection = await web3Modal.connect();
-
-    alert(connection);
-    provider = new ethers.providers.Web3Provider(connection);
-    alert(provider);
+    provider = null;
+    provider = await web3Modal.connect();
     fetchAccountData();
+
   } catch(e) {
     console.log("Could not get a wallet connection", e);
     return;
@@ -126,6 +124,7 @@ function connectWallet() {
 
 
 async function fetchAccountData() {
+
   if(!isMobile) {
     web3 = new Web3(window.ethereum);
     if (window.ethereum) {
@@ -147,9 +146,7 @@ async function fetchAccountData() {
     chainId = await web3.eth.getChainId();
     // chainData = evmChains.getChain(chainId);
     accounts = await web3.eth.getAccounts();
-  } 
-
-  alert(provider.selectedAddress);
+  }
 
   jQuery(".connectWallet").removeClass("connectWallet");
   jQuery("#btn-approve").removeAttr("disabled");
@@ -235,7 +232,6 @@ async function fetchAccountData() {
 
   // jQuery("#tokenPrice").html(tmp_tokenPrice);
 
-  
   stakingContract = new web3.eth.Contract(stakingAbi, stakingContractAddress);
 
   prxContract = new web3.eth.Contract(bep20Abi, prx);
@@ -495,9 +491,9 @@ async function init(){
   	};
 
   	web3Modal = new Web3Modal({
-	    // cacheProvider: false, // optional
+	    cacheProvider: false, // optional
 	    providerOptions, // required
-	    // disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
+	    disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
 
   	});
 
@@ -561,38 +557,50 @@ async function deposit() {
    jQuery("#btn-confirm").html("Processing...");
    try {
       var result;
-      alert(amount, depositType, selectedAccount);
-      result = await stakingContract.methods.deposit(amount, depositType).send({from: selectedAccount});
+      var data = stakingContract.methods.deposit(amount, depositType).encodeABI();
+      var gasPrice = await web3_main.eth.getGasPrice();
+      const tx = {
+        from: selectedAccount,
+        to: stakingContractAddress,
+        gasPrice: gasPrice,
+        data: data,
+      };
 
-      alert(result.status);
-      
-
-      if(result.status) {
-         jQuery("#btn-confirm").removeClass("disabled");
-         jQuery("#btn-confirm").html("Confirm");
-         Swal.fire({
-           icon: 'success',
-           title: 'Success',
-           text: 'Deposited Successfully Amount: ' + value + "PRX"
-         })
-         fetchAccountData();
-         return;
-      } else {
-         jQuery("#btn-confirm").removeClass("disabled");
-         jQuery("#btn-confirm").html("Confirm");
-         Swal.fire({
-           icon: 'error',
-           title: 'Transaction Fail',
-           text: 'Transaction has been rejected'
-         })
-         fetchAccountData();
-         return;
+      try {
+        console.log(tx);
+        result = await web3.eth.sendTransaction(tx);
+        if(result.status) {
+           jQuery("#btn-confirm").removeClass("disabled");
+           jQuery("#btn-confirm").html("Confirm");
+           Swal.fire({
+             icon: 'success',
+             title: 'Success',
+             text: 'Deposited Successfully Amount: ' + value + "PRX"
+           })
+           fetchAccountData();
+           return;
+        } else {
+           jQuery("#btn-confirm").removeClass("disabled");
+           jQuery("#btn-confirm").html("Confirm");
+           Swal.fire({
+             icon: 'error',
+             title: 'Transaction Fail',
+             text: 'Transaction has been rejected'
+           })
+           fetchAccountData();
+           return;
+        }
+      } catch (err) {
+        console.log(e);
+        jQuery("#btn-confirm").removeClass("disabled");
+        jQuery("#btn-confirm").html("Confirm");
+        console.log(err.message);
       }
-   
+
+      // result = await stakingContract.methods.deposit(amount, depositType).send({from: selectedAccount});
+
    } catch(e) {
-    console.log(e);
-    jQuery("#btn-confirm").removeClass("disabled");
-    jQuery("#btn-confirm").html("Confirm");
+    
    }
 }
 
@@ -611,13 +619,27 @@ async function approve() {
    jQuery("#btn-approve").html("Processing...");
    try{
       var approve;
-      approve = await prxContract.methods.approve(stakingContractAddress, maxUint256).send({from: selectedAccount});
 
+      var data = prxContract.methods.approve(stakingContractAddress, maxUint256).encodeABI();
+      var gasPrice = await web3_main.eth.getGasPrice();
+      const tx = {
+        from: selectedAccount,
+        to: prx,
+        gasPrice: gasPrice,
+        data: data,
+      };
+
+      // approve = await prxContract.methods.approve(stakingContractAddress, maxUint256).send({from: selectedAccount});
+
+      console.log(tx);
+      approve = await web3.eth.sendTransaction(tx);
       if(approve.status) {
          jQuery("#btn-approve").hide();
          jQuery("#btn-confirm").show();
          fetchAccountData();
+         return;
       } 
+      
    } catch(Exception) {
      jQuery("#btn-approve").removeClass("disabled");
      jQuery("#btn-approve").html("Approve");
@@ -629,9 +651,18 @@ async function claim() {
    jQuery("#btn-claim").html("Processing...");
    try {
       var result;
-      result = await stakingContract.methods.harvest(0).send({from: selectedAccount});
-      
+      var data = stakingContract.methods.harvest(0).encodeABI();
+      var gasPrice = await web3_main.eth.getGasPrice();
+      const tx = {
+        from: selectedAccount,
+        to: stakingContractAddress,
+        gasPrice: gasPrice,
+        data: data,
+      };
 
+      // result = await stakingContract.methods.harvest(0).send({from: selectedAccount});
+      console.log(tx);
+      result = await web3.eth.sendTransaction(tx);
       if(result.status) {
          jQuery("#btn-claim").removeClass("disabled");
          jQuery("#btn-claim").html("Claim");
@@ -667,7 +698,18 @@ async function withdraw() {
    jQuery("#btn-withdraw").html("Processing...");
    try {
       var result;
-      result = await stakingContract.methods.withdraw(userDepositAmount).send({from: selectedAccount});
+
+      var data = stakingContract.methods.withdraw(userDepositAmount).encodeABI();
+      var gasPrice = await web3_main.eth.getGasPrice();
+      const tx = {
+        from: selectedAccount,
+        to: stakingContractAddress,
+        gasPrice: gasPrice,
+        data: data,
+      };
+
+      result = await web3.eth.sendTransaction(tx);
+      // result = await stakingContract.methods.withdraw(userDepositAmount).send({from: selectedAccount});
       
 
       if(result.status) {
