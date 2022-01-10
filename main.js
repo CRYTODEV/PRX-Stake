@@ -81,10 +81,6 @@ async function onConnect() {
     fetchAccountData();
   });
 
-  dataInterval = setInterval(function () {
-     fetchAccountData();
-  }, 5 * 1000);
-
 }
 
 
@@ -150,6 +146,8 @@ async function fetchAccountData() {
   } 
 
   jQuery(".connectWallet").removeClass("connectWallet");
+  jQuery("#btn-approve").removeAttr("disabled");
+  jQuery("#btn-confirm").removeAttr("disabled");
 
   if (chainId != 56 && chainId != 97) {
       onDisconnect();
@@ -395,12 +393,17 @@ async function checkAllowance() {
 
   var allowanceAmount = await getAllowanceAmount();
 
+  jQuery("#btn-approve").removeAttr("disabled");
+  jQuery("#btn-confirm").removeAttr("disabled");
+
   if (allowanceAmount <= 0) {
         jQuery("#btn-approve").show();
         jQuery("#btn-confirm").hide();
+        jQuery("#btn-approve").html("Approve");
   } else {
         jQuery("#btn-approve").hide();
         jQuery("#btn-confirm").show();
+        jQuery("#btn-confirm").html("Confirm");
   }
 }
 
@@ -533,6 +536,8 @@ async function deposit() {
    try {
       var result;
       result = await stakingContract.methods.deposit(amount, depositType).send({from: selectedAccount});
+
+      alert(result.status);
       
 
       if(result.status) {
