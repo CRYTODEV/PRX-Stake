@@ -61,7 +61,10 @@ window.addEventListener('load', async () => {
 async function onConnect() {
   try {
     connection = await web3Modal.connect();
+
+    alert(connection);
     provider = new ethers.providers.Web3Provider(connection);
+    alert(provider);
     fetchAccountData();
   } catch(e) {
     console.log("Could not get a wallet connection", e);
@@ -146,7 +149,7 @@ async function fetchAccountData() {
     accounts = await web3.eth.getAccounts();
   } 
 
-  // alert(provider.selectedAddress);
+  alert(provider.selectedAddress);
 
   jQuery(".connectWallet").removeClass("connectWallet");
   jQuery("#btn-approve").removeAttr("disabled");
