@@ -543,6 +543,8 @@ jQuery(document).ready(function(){
 
 
 async function deposit() {
+
+  alert(1);
    if(!validInput()){
       $(".input-amount").addClass("invalidInput");
       $(".input-amount").focus();
