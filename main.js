@@ -492,9 +492,9 @@ async function init(){
   	};
 
   	web3Modal = new Web3Modal({
-	    cacheProvider: false, // optional
+	    // cacheProvider: false, // optional
 	    providerOptions, // required
-	    disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
+	    // disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
 
   	});
 
