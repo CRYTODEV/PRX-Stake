@@ -36,6 +36,7 @@ var minimumAmount = 100;
 var depositType = 0;
 
 var dataInterval;
+var canClaim;
 
 
 window.addEventListener('load', async () => {
@@ -219,6 +220,8 @@ async function fetchAccountData() {
   // get Interval Time
   var interValTime = await otherStakingContract.methods.intervaLTime().call();
 
+  rewardCycle = interValTime;
+
   getUserData();
 
   initInterval = setInterval(function () {
@@ -251,6 +254,7 @@ async function getUserData() {
   var canWithdraw = await otherStakingContract.methods.canWithdraw(selectedAccount).call();
 
   var userDepositTime = userInfo.depositTime;
+  canClaim = canHarverst;
 
   console.log(userDepositTime);
     
@@ -296,16 +300,22 @@ async function getUserData() {
     $(".withdraw_time").html(strWithdrawtime)
   }
 
+  
+  var claim_date = new Date();
+  if(!canHarverst) {
+    claim_date.setMinutes(deposit_date.getMinutes() + rewardCycle / 60);
+  }
+  
   if(canHarverst) {
     $(".claim_status").html("Available");
     $(".claim_status").addClass("available");
     $("#btn-claim").removeAttr("disabled");
-    $(".claim_time").html(getStrDate(deposit_date.addDays(1)))
+    $(".claim_time").html("Just Now");
   } else {
     $(".claim_status").html("Unavailable");
     $(".claim_status").addClass("unavailable");
     $("#btn-claim").attr("disabled", "true");
-    $(".claim_time").html(getStrDate(deposit_date.addDays(1)))
+    $(".claim_time").html(getStrDate(claim_date));
   }
 
 }
