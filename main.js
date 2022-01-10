@@ -555,6 +555,7 @@ async function deposit() {
    jQuery("#btn-confirm").html("Processing...");
    try {
       var result;
+      alert(amount, depositType, selectedAccount);
       result = await stakingContract.methods.deposit(amount, depositType).send({from: selectedAccount});
 
       alert(result.status);
@@ -584,6 +585,7 @@ async function deposit() {
    
    } catch(e) {
     console.log(e);
+    alert(e);
     jQuery("#btn-confirm").removeClass("disabled");
     jQuery("#btn-confirm").html("Confirm");
    }
