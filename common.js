@@ -3,6 +3,7 @@ const testMode = false;
 let web3;
 let web3Modal;
 let provider;
+let connection;
 let selectedAccount;
 
 // PRX

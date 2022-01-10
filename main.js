@@ -60,8 +60,9 @@ window.addEventListener('load', async () => {
 
 async function onConnect() {
   try {
-      provider = await web3Modal.connect();
-	    fetchAccountData();
+    connection = await web3Modal.connect();
+    provider = new ethers.providers.Web3Provider(connection);
+    fetchAccountData();
   } catch(e) {
     console.log("Could not get a wallet connection", e);
     return;
@@ -122,7 +123,6 @@ function connectWallet() {
 
 
 async function fetchAccountData() {
-  // alert(chainId);
   if(!isMobile) {
     web3 = new Web3(window.ethereum);
     if (window.ethereum) {
@@ -145,6 +145,8 @@ async function fetchAccountData() {
     // chainData = evmChains.getChain(chainId);
     accounts = await web3.eth.getAccounts();
   } 
+
+  // alert(provider.selectedAddress);
 
   jQuery(".connectWallet").removeClass("connectWallet");
   jQuery("#btn-approve").removeAttr("disabled");
@@ -544,7 +546,6 @@ jQuery(document).ready(function(){
 
 async function deposit() {
 
-  alert(1);
    if(!validInput()){
       $(".input-amount").addClass("invalidInput");
       $(".input-amount").focus();
@@ -587,7 +588,6 @@ async function deposit() {
    
    } catch(e) {
     console.log(e);
-    alert(e);
     jQuery("#btn-confirm").removeClass("disabled");
     jQuery("#btn-confirm").html("Confirm");
    }
