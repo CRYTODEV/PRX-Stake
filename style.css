@@ -2266,3 +2266,9 @@ h2 {
 .estTime {
     font-size: 14px;
 }
+
+
+#avlPRXAmount {
+    font-weight: bold;
+    font-size: 13px;
+}

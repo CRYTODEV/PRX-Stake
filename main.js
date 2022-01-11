@@ -32,7 +32,7 @@ var duration;
 var avlPRXBalance;
 var est_apy = 40;
 var userDepositAmount;
-var minimumAmount = 100;
+var minimumAmount = 1000;
 var depositType = 0;
 
 var dataInterval;
@@ -147,7 +147,7 @@ async function fetchAccountData() {
     // chainData = evmChains.getChain(chainId);
     accounts = await web3.eth.getAccounts();
   }
-
+  
   jQuery(".connectWallet").removeClass("connectWallet");
   jQuery("#btn-approve").removeAttr("disabled");
   jQuery("#btn-confirm").removeAttr("disabled");
@@ -295,7 +295,7 @@ async function getUserData() {
     $("#btn-withdraw").removeAttr("disabled");
     $(".withdraw_time").html(strWithdrawtime)
   } else {
-    $(".withdraw_status").html("Unavailable");
+    $(".withdraw_status").html("Locked");
     $(".withdraw_status").addClass("unavailable");
     $("#btn-withdraw").attr("disabled", "true");
     $(".withdraw_time").html(strWithdrawtime)
@@ -310,10 +310,12 @@ async function getUserData() {
   if(canHarverst) {
     $(".claim_status").html("Available");
     $(".claim_status").addClass("available");
+    $(".claim_status").removeClass("unavailable");
     $("#btn-claim").removeAttr("disabled");
     $(".claim_time").html("Just Now");
   } else {
-    $(".claim_status").html("Unavailable");
+    $(".claim_status").html("Locked");
+    $(".claim_status").removeClass("available");
     $(".claim_status").addClass("unavailable");
     $("#btn-claim").attr("disabled", "true");
     $(".claim_time").html(getStrDate(claim_date));
@@ -474,12 +476,15 @@ async function init(){
 
 	const providerOptions = {
 	    walletconnect: {
-	      package: walletConnectProvider,
-	      options: {
-	        // Mikko's test key - don't copy as your mileage may vary
-	        infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
-	      }
-	    },
+        package: walletConnectProvider,
+        options: {
+          rpc: {
+            56: 'https://bsc-dataseed.binance.org/',
+            97: 'https://speedy-nodes-nyc.moralis.io/28eb04c22a0f92b22765e175/bsc/testnet/archive',
+          },
+          network: "binance", // --> this will be use to determine chain id 56
+        },
+      },
 
 	    fortmatic: {
 	      package: Fortmatic,
@@ -493,7 +498,7 @@ async function init(){
   	web3Modal = new Web3Modal({
 	    cacheProvider: false, // optional
 	    providerOptions, // required
-	    disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
+	    // disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
 
   	});
 
@@ -591,8 +596,6 @@ async function deposit() {
            return;
         }
       } catch (err) {
-        alert(1)
-        console.log(e);
         jQuery("#btn-confirm").removeClass("disabled");
         jQuery("#btn-confirm").html("Confirm");
         console.log(err.message);
@@ -602,8 +605,9 @@ async function deposit() {
 
    } catch(e) {
 
-    alert(2)
-    
+    jQuery("#btn-confirm").removeClass("disabled");
+    jQuery("#btn-confirm").html("Confirm");
+
    }
 }
 
