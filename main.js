@@ -31,8 +31,9 @@ let allowance;
 var duration;
 var avlPRXBalance;
 var est_apy = 40;
+var est_apr = 10;
 var userDepositAmount;
-var minimumAmount = 1000;
+var minimumAmount = 3000;
 var depositType = 0;
 
 var dataInterval;
@@ -49,7 +50,7 @@ window.addEventListener('load', async () => {
          // false for not mobile device
    }
 
-	init();
+  init();
 
    var innerWidth = window.innerWidth;
    var innerHeight = window.innerHeight;
@@ -394,7 +395,8 @@ function validInput() {
     }
 
     $(".error-msg").hide();
-    var est_interest = $(".input-amount").val() * est_apy / 100 * tokenPrice;
+    // var est_interest = $(".input-amount").val() * est_apy / 100 * tokenPrice;
+    var est_interest = $(".input-amount").val() * est_apr / 100 * tokenPrice;
     $("#est_interest").html(est_interest);
     return true;
 }
@@ -474,8 +476,8 @@ async function init(){
   }, 60000);
   
 
-	const providerOptions = {
-	    walletconnect: {
+  const providerOptions = {
+      walletconnect: {
         package: walletConnectProvider,
         options: {
           rpc: {
@@ -486,21 +488,21 @@ async function init(){
         },
       },
 
-	    fortmatic: {
-	      package: Fortmatic,
-	      options: {
-	        // Mikko's TESTNET api key
-	        key: "pk_test_391E26A3B43A3350"
-	      }
-	    }
-  	};
+      fortmatic: {
+        package: Fortmatic,
+        options: {
+          // Mikko's TESTNET api key
+          key: "pk_test_391E26A3B43A3350"
+        }
+      }
+    };
 
-  	web3Modal = new Web3Modal({
-	    cacheProvider: false, // optional
-	    providerOptions, // required
-	    // disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
+    web3Modal = new Web3Modal({
+      cacheProvider: false, // optional
+      providerOptions, // required
+      // disableInjectedProvider: isMobile, // optional. For MetaMask / Brave / Opera.
 
-  	});
+    });
 
 }
 
@@ -796,7 +798,8 @@ function setDuration(type) {
     $(".duration0 .check-active").removeClass("hide");
     $(".duration0").addClass("btn-active");
     duration = 90;
-    est_apy = 40;
+    // est_apy = 40;
+    est_apr = 10;
     depositType = 0;
   }
 
@@ -806,7 +809,8 @@ function setDuration(type) {
     $(".duration1 .check-active").removeClass("hide");
     $(".duration1").addClass("btn-active");
     duration = 180;
-    est_apy = 30;
+    // est_apy = 30;
+    est_apr = 15;
     depositType = 1;
   }
 
@@ -815,12 +819,14 @@ function setDuration(type) {
     $(".btn-active").removeClass("btn-active");
     $(".duration2 .check-active").removeClass("hide");
     $(".duration2").addClass("btn-active");
-    duration = 180;
-    est_apy = 20;
+    duration = 365;
+    // est_apy = 20;
+    est_apr = 20;
     depositType = 2;
   }
 
-  $("#est_apy").html(est_apy);
+  // $("#est_apy").html(est_apy);
+  $("#est_apr").html(est_apr);
 
   validInput();
 }
